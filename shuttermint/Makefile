@@ -2,7 +2,6 @@
 
 PREFIX ?= /usr/local
 GO ?= go
-TINYGO ?= tinygo
 GOFLAGS ?=
 SHROOT ?= $(CURDIR)
 TESTROOT=$(SHROOT)/testchain
@@ -15,11 +14,6 @@ build:
 	@VERSION=`git describe --tags --always --abbrev=4 --dirty`; \
 	echo "Building shuttermint $${VERSION}"; \
 	${GO} build ${GOFLAGS} -o ${BINDIR} -ldflags "-X github.com/shutter-network/shutter/shuttermint/cmd/shversion.version=$${VERSION}" . ./sandbox/testclient
-
-shcryptowasm:
-	${TINYGO} build -target wasm -size full -o ${BINDIR}/encrypt.wasm ./shcryptowasm/encrypt_wasm.go
-	${TINYGO} build -target wasm -size full -o ${BINDIR}/decrypt.wasm ./shcryptowasm/decrypt_wasm.go
-	${TINYGO} build -target wasm -size full -o ${BINDIR}/both.wasm ./shcryptowasm/both_wasm.go
 
 protoc:
 	protoc shmsg/shmsg.proto --go_out=shmsg/
@@ -89,4 +83,4 @@ abigen:
 deploy-ganache:
 	${GO} run ./sandbox/deploy/deploy.go deploy
 
-.PHONY: build install run init clean test generate install-abigen install-geth install-protoc-gen-go install-golangci-lint install-cobra install-gofumpt install-tools lint lint-changes abigen coverage shcryptowasm
+.PHONY: build install run init clean test generate install-abigen install-geth install-protoc-gen-go install-golangci-lint install-cobra install-gofumpt install-tools lint lint-changes abigen coverage
