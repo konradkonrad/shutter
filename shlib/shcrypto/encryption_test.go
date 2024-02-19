@@ -255,6 +255,27 @@ func TestRoundTrip(t *testing.T) {
 	assert.DeepEqual(t, m, decM)
 }
 
+func TestZeroSigma(t *testing.T) {
+	message := []byte("secret")
+	eonPublicKey, _, epochIDPoint := makeKeys(t)
+	eonPublicKey2, _, epochIDPoint2 := makeKeys(t)
+	var zeroSigma = Block(make([]byte, BlockSize))
+	encryptedMessage := Encrypt(
+		message,
+		eonPublicKey,
+		epochIDPoint,
+		zeroSigma,
+	)
+	encryptedMessage2 := Encrypt(
+		message,
+		eonPublicKey2,
+		epochIDPoint2,
+		zeroSigma,
+	)
+	assert.Assert(t, !bytes.Equal(eonPublicKey.Marshal(), eonPublicKey2.Marshal()), "eon keys should differ")
+	assert.Assert(t, !bytes.Equal(encryptedMessage.Marshal(), encryptedMessage2.Marshal()), "empty sigma yields same encrypted result")
+}
+
 func TestC1Malleability(t *testing.T) {
 	message := []byte("secret message")
 	eonPublicKey, decryptionKey, epochIDPoint := makeKeys(t)
